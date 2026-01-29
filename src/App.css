@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: 221 240 255; /* blue-100 equivalent */
+  --color-primary-foreground: 23 37 84; /* blue-900 equivalent */
+  
+  --color-background: 0 0% 100%;
+  --color-foreground: 222.2 47.4% 11.2%;
+  --color-muted: 210 40% 96.1%;
+  --color-muted-foreground: 215.4 16.3% 46.9%;
+  --color-popover: 0 0% 100%;
+  --color-popover-foreground: 222.2 47.4% 11.2%;
+  --color-card: 0 0% 100%;
+  --color-card-foreground: 222.2 47.4% 11.2%;
+  --color-border: 214.3 31.8% 91.4%;
+  --color-input: 214.3 31.8% 91.4%;
+  --color-secondary: 210 40% 96.1%;
+  --color-secondary-foreground: 222.2 47.4% 11.2%;
+  --color-accent: 210 40% 96.1%;
+  --color-accent-foreground: 222.2 47.4% 11.2%;
+  --color-destructive: 0 100% 50%;
+  --color-destructive-foreground: 210 40% 98%;
+  --color-primary: 222.2 47.4% 11.2%;
+  --color-primary-foreground: 210 40% 98%;
+  --color-ring: 215 20.2% 65.1%;
+  --color-radius: 0.5rem;
+}
+
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+  --color-background: oklch(20.8% 0.042 265.755); /* Specified dark theme color */
+  --color-foreground: 210 20% 98%; /* Very light gray/white */
+  --color-muted: oklch(25% 0.042 265.755); /* Muted backgrounds using similar hue */
+  --color-muted-foreground: 215 10% 65%; /* Light gray text */
+  --color-popover: oklch(18% 0.042 265.755); /* Popover using similar hue */
+  --color-popover-foreground: 210 20% 95%; /* Light text */
+  --color-card: oklch(22% 0.042 265.755); /* Card backgrounds using similar hue */
+  --color-card-foreground: 210 20% 98%; /* Light card text */
+  --color-border: oklch(30% 0.042 265.755); /* Borders using similar hue */
+  --color-input: oklch(25% 0.042 265.755); /* Input backgrounds using similar hue */
+  --color-primary: 210 40% 98%; /* Light primary in dark mode */
+  --color-primary-foreground: 222.2 47.4% 15%; /* Darker text on primary */
+  --color-secondary: oklch(25% 0.042 265.755); /* Secondary backgrounds using similar hue */
+  --color-secondary-foreground: 210 20% 95%;
+  --color-accent: oklch(25% 0.042 265.755); /* Accent backgrounds using similar hue */
+  --color-accent-foreground: 210 20% 95%;
+  --color-destructive: 0 70% 45%; /* Red with better contrast */
+  --color-destructive-foreground: 0 0% 98%;
+  --color-ring: oklch(35% 0.042 265.755); /* Ring color using similar hue */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
