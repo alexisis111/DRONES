@@ -1,13 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface ContactProps {
   darkMode: boolean;
 }
 
 const Contact: React.FC<ContactProps> = ({ darkMode }) => {
-  // Check if the page was loaded with success parameter
-  const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-  const showSuccess = urlParams.get('success') === 'true';
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  // Check URL params on component mount to show success message if coming from form submission
+  useEffect(() => {
+    const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+    if (urlParams.get('success') === 'true') {
+      setShowSuccess(true);
+      // Remove the success parameter from URL without reloading
+      if (typeof window !== 'undefined') {
+        const newUrl = window.location.pathname + window.location.hash;
+        window.history.replaceState(null, '', newUrl);
+      }
+    }
+  }, []);
 
   // Show success message if form was submitted successfully
   const successMessage = showSuccess ? 'Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.' : '';
@@ -69,8 +80,47 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                 name="contact"
                 method="POST"
                 data-netlify="true"
-                action="/contact?success=true#contact"
                 netlify-honeypot="bot-field"
+                onSubmit={async (e) => {
+                  e.preventDefault(); // Prevent default form submission
+
+                  // Get form data
+                  const formData = new FormData(e.currentTarget);
+
+                  try {
+                    // Convert FormData to URLSearchParams
+                    const formBody = new URLSearchParams();
+                    for (const [key, value] of formData.entries()) {
+                      formBody.append(key, value.toString());
+                    }
+
+                    // Submit form using fetch
+                    const response = await fetch('/', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                      },
+                      body: formBody.toString(),
+                    });
+
+                    if (response.ok) {
+                      // Show success message
+                      setShowSuccess(true);
+
+                      // Reset form
+                      e.currentTarget.reset();
+
+                      // Hide success message after 5 seconds
+                      setTimeout(() => {
+                        setShowSuccess(false);
+                      }, 5000);
+                    } else {
+                      console.error('Form submission failed');
+                    }
+                  } catch (error) {
+                    console.error('Error submitting form:', error);
+                  }
+                }}
                 className="space-y-6"
               >
                 {/* Netlify form name hidden input */}
