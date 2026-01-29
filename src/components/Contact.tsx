@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface ContactProps {
   darkMode: boolean;
 }
 
 const Contact: React.FC<ContactProps> = ({ darkMode }) => {
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  // Check if the page was loaded with success parameter
+  const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const showSuccess = urlParams.get('success') === 'true';
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // For Netlify Forms, we let the form submit normally
-    // The success/error handling will be done via Netlify's form processing
-    setSuccessMessage('Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.');
-    setTimeout(() => {
-      setSuccessMessage('');
-    }, 5000); // Clear message after 5 seconds
-  };
+  // Show success message if form was submitted successfully
+  const successMessage = showSuccess ? 'Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.' : '';
 
   return (
     <section id="contact" className={`py-16 ${darkMode ? 'bg-muted' : 'bg-muted'}`}>
@@ -74,7 +69,7 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                 name="contact"
                 method="POST"
                 data-netlify="true"
-                onSubmit={handleSubmit}
+                action="/?success=true#contact"
                 className="space-y-6"
               >
                 {/* Netlify form name hidden input */}
@@ -124,13 +119,11 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                 </button>
 
                 {/* Success Message */}
-                <div id="form-messages" className="mt-4">
-                  {successMessage && (
-                    <div className="p-4 bg-green-100 text-green-700 rounded-lg">
-                      {successMessage}
-                    </div>
-                  )}
-                </div>
+                {successMessage && (
+                  <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                    {successMessage}
+                  </div>
+                )}
               </form>
             </div>
           </div>
