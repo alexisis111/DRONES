@@ -804,7 +804,7 @@ const DayClouds = () => {
 };
 
 // ——— ОСНОВНОЙ КОМПОНЕНТ ———
-const ZOKVisualization = () => {
+const ZOKVisualization = ({ enableControls = true }) => {
     return (
         <div className="w-full h-[500px] rounded-xl overflow-hidden bg-gray-50">
             <Canvas
@@ -859,6 +859,7 @@ const ZOKVisualization = () => {
                 <DroneAttackLoop />
 
                 <OrbitControls
+                    enabled={enableControls}
                     enablePan={true}
                     enableZoom={true}
                     enableRotate={true}

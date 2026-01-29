@@ -36,9 +36,9 @@ const Hero: React.FC = () => {
         </div>
         <div className="md:w-1/2 w-full">
           <div className="relative">
-            <ZOKVisualization />
+            <ZOKVisualization enableControls={false} />
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white text-sm px-3 py-2 rounded-lg">
-              Покрутите модель, чтобы рассмотреть со всех сторон
+              Нажмите на иконку сверху, чтобы открыть 3D модель и покрутить
             </div>
             <button
               onClick={() => setIsFullscreenModalOpen(true)}
@@ -131,7 +131,7 @@ const Hero: React.FC = () => {
           </div>
           <div className="flex-1 flex items-center justify-center p-4">
             <div className="w-full h-full max-w-6xl max-h-[80vh]">
-              <ZOKVisualization />
+              <ZOKVisualization enableControls={true} />
             </div>
           </div>
           <div className="p-4 text-center text-white bg-black bg-opacity-50">
