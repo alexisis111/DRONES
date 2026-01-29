@@ -7,18 +7,15 @@ interface ContactProps {
 const Contact: React.FC<ContactProps> = ({ darkMode }) => {
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Check URL params on component mount to show success message if coming from form submission
+  // Auto-hide success message after 5 seconds
   useEffect(() => {
-    const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-    if (urlParams.get('success') === 'true') {
-      setShowSuccess(true);
-      // Remove the success parameter from URL without reloading
-      if (typeof window !== 'undefined') {
-        const newUrl = window.location.pathname + window.location.hash;
-        window.history.replaceState(null, '', newUrl);
-      }
+    if (showSuccess) {
+      const timer = setTimeout(() => {
+        setShowSuccess(false);
+      }, 5000);
+      return () => clearTimeout(timer);
     }
-  }, []);
+  }, [showSuccess]);
 
 
   // Show success message if form was submitted successfully
@@ -77,33 +74,76 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
             </div>
 
             <div className="md:w-2/3 p-8">
-              {/* Hidden form for Netlify to detect and process */}
-              <form
-                name="contact"
-                method="POST"
-                data-netlify="true"
-                netlify-honeypot="bot-field"
-                action="/?success=true#contact"
-                className="hidden"
-              >
-                {/* Netlify form name hidden input */}
-                <input type="hidden" name="form-name" value="contact" />
-                {/* Honeypot field to catch spam bots */}
-                <input type="hidden" name="bot-field" />
-                <input type="hidden" name="name" id="hidden-name" />
-                <input type="hidden" name="email" id="hidden-email" />
-                <input type="hidden" name="message" id="hidden-message" />
-                <button type="submit">Hidden Submit</button>
-              </form>
-
               {/* Visible form for user interaction */}
-              <form className="space-y-6">
+              <form
+                className="space-y-6"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+
+                  // Get form values
+                  const visibleName = (document.getElementById('visible-name') as HTMLInputElement)?.value;
+                  const visibleEmail = (document.getElementById('visible-email') as HTMLInputElement)?.value;
+                  const visibleMessage = (document.getElementById('visible-message') as HTMLTextAreaElement)?.value;
+
+                  // Submit to Telegram webhook
+                  try {
+                    const response = await fetch('/.netlify/functions/telegram-webhook', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        name: visibleName,
+                        email: visibleEmail,
+                        message: visibleMessage,
+                      }),
+                    });
+
+                    if (!response.ok) {
+                      console.error('Error sending to Telegram:', await response.text());
+                    }
+                  } catch (error) {
+                    console.error('Network error sending to Telegram:', error);
+                  }
+
+                  // Submit to Netlify using JavaScript API
+                  const formData = new FormData();
+                  formData.append('form-name', 'contact');
+                  formData.append('name', visibleName);
+                  formData.append('email', visibleEmail);
+                  formData.append('message', visibleMessage);
+
+                  try {
+                    const netlifyResponse = await fetch('/', {
+                      method: 'POST',
+                      body: formData,
+                      headers: {
+                        'Accept': 'application/json',
+                      },
+                    });
+
+                    if (netlifyResponse.ok) {
+                      // Show success message
+                      setShowSuccess(true);
+
+                      // Reset form
+                      (document.getElementById('visible-name') as HTMLInputElement).value = '';
+                      (document.getElementById('visible-email') as HTMLInputElement).value = '';
+                      (document.getElementById('visible-message') as HTMLTextAreaElement).value = '';
+                    } else {
+                      console.error('Netlify form submission failed');
+                    }
+                  } catch (error) {
+                    console.error('Netlify form submission error:', error);
+                  }
+                }}
+              >
                 <div>
                   <label htmlFor="visible-name" className="block text-sm font-medium text-foreground mb-1">Ваше имя</label>
                   <input
                     type="text"
                     id="visible-name"
-                    name="visible-name"
+                    name="name"
                     className="w-full px-4 py-2 border border-input rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-background text-foreground"
                     placeholder="Иван Иванов"
                     required
@@ -115,7 +155,7 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                   <input
                     type="email"
                     id="visible-email"
-                    name="visible-email"
+                    name="email"
                     className="w-full px-4 py-2 border border-input rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-background text-foreground"
                     placeholder="ivan@example.com"
                     required
@@ -126,7 +166,7 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                   <label htmlFor="visible-message" className="block text-sm font-medium text-foreground mb-1">Сообщение</label>
                   <textarea
                     id="visible-message"
-                    name="visible-message"
+                    name="message"
                     rows={4}
                     className="w-full px-4 py-2 border border-input rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-background text-foreground"
                     placeholder="Расскажите о вашем объекте и потребностях..."
@@ -135,44 +175,7 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                 </div>
 
                 <button
-                  type="button"
-                  onClick={async () => {
-                    // Copy values from visible form to hidden form
-                    const visibleName = (document.getElementById('visible-name') as HTMLInputElement)?.value;
-                    const visibleEmail = (document.getElementById('visible-email') as HTMLInputElement)?.value;
-                    const visibleMessage = (document.getElementById('visible-message') as HTMLTextAreaElement)?.value;
-
-                    (document.getElementById('hidden-name') as HTMLInputElement).value = visibleName;
-                    (document.getElementById('hidden-email') as HTMLInputElement).value = visibleEmail;
-                    (document.getElementById('hidden-message') as HTMLInputElement).value = visibleMessage;
-
-                    // Submit to Telegram webhook
-                    try {
-                      const response = await fetch('/.netlify/functions/telegram-webhook', {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                          name: visibleName,
-                          email: visibleEmail,
-                          message: visibleMessage,
-                        }),
-                      });
-
-                      if (!response.ok) {
-                        console.error('Error sending to Telegram:', await response.text());
-                      }
-                    } catch (error) {
-                      console.error('Network error sending to Telegram:', error);
-                    }
-
-                    // Submit the hidden form
-                    const hiddenForm = document.querySelector('form[name="contact"]') as HTMLFormElement;
-                    if (hiddenForm) {
-                      hiddenForm.submit();
-                    }
-                  }}
+                  type="submit"
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
                 >
                   Отправить запрос
