@@ -85,6 +85,9 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                   const visibleEmail = (document.getElementById('visible-email') as HTMLInputElement)?.value;
                   const visibleMessage = (document.getElementById('visible-message') as HTMLTextAreaElement)?.value;
 
+                  let telegramSuccess = false;
+                  let netlifySuccess = false;
+
                   // Submit to Telegram webhook
                   try {
                     const response = await fetch('/.netlify/functions/telegram-webhook', {
@@ -99,7 +102,9 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                       }),
                     });
 
-                    if (!response.ok) {
+                    if (response.ok) {
+                      telegramSuccess = true;
+                    } else {
                       console.error('Error sending to Telegram:', await response.text());
                     }
                   } catch (error) {
@@ -123,18 +128,23 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                     });
 
                     if (netlifyResponse.ok) {
-                      // Show success message
-                      setShowSuccess(true);
-
-                      // Reset form
-                      (document.getElementById('visible-name') as HTMLInputElement).value = '';
-                      (document.getElementById('visible-email') as HTMLInputElement).value = '';
-                      (document.getElementById('visible-message') as HTMLTextAreaElement).value = '';
+                      netlifySuccess = true;
                     } else {
                       console.error('Netlify form submission failed');
                     }
                   } catch (error) {
                     console.error('Netlify form submission error:', error);
+                  }
+
+                  // Show success message if either submission worked
+                  if (telegramSuccess || netlifySuccess) {
+                    // Show success message
+                    setShowSuccess(true);
+
+                    // Reset form
+                    (document.getElementById('visible-name') as HTMLInputElement).value = '';
+                    (document.getElementById('visible-email') as HTMLInputElement).value = '';
+                    (document.getElementById('visible-message') as HTMLTextAreaElement).value = '';
                   }
                 }}
               >
