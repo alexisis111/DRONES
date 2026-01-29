@@ -5,54 +5,16 @@ interface ContactProps {
 }
 
 const Contact: React.FC<ContactProps> = ({ darkMode }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSuccessMessage('');
-    setErrorMessage('');
-
-    // Get form data
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const message = formData.get('message') as string;
-
-    try {
-      // Prepare form data for sending
-      const requestData = {
-        name,
-        email,
-        message,
-        to_email: 'shuragilyow1@gmail.com' // Target email
-      };
-
-      // Send the form data to our Netlify Function
-      const response = await fetch('/.netlify/functions/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to send email');
-      }
-
-      // On success
-      setSuccessMessage('Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.');
-      e.currentTarget.reset(); // Reset form
-    } catch (error) {
-      console.error('Error sending email:', error);
-      setErrorMessage('Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте еще раз.');
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // For Netlify Forms, we let the form submit normally
+    // The success/error handling will be done via Netlify's form processing
+    setSuccessMessage('Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.');
+    setTimeout(() => {
+      setSuccessMessage('');
+    }, 5000); // Clear message after 5 seconds
   };
 
   return (
@@ -108,7 +70,16 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
             </div>
 
             <div className="md:w-2/3 p-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                onSubmit={handleSubmit}
+                className="space-y-6"
+              >
+                {/* Netlify form name hidden input */}
+                <input type="hidden" name="form-name" value="contact" />
+
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1">Ваше имя</label>
                   <input
@@ -148,21 +119,15 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                 <button
                   type="submit"
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
-                  disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Отправка...' : 'Отправить запрос'}
+                  Отправить запрос
                 </button>
 
-                {/* Success/Error Messages - Initially hidden */}
+                {/* Success Message */}
                 <div id="form-messages" className="mt-4">
                   {successMessage && (
                     <div className="p-4 bg-green-100 text-green-700 rounded-lg">
                       {successMessage}
-                    </div>
-                  )}
-                  {errorMessage && (
-                    <div className="p-4 bg-red-100 text-red-700 rounded-lg">
-                      {errorMessage}
                     </div>
                   )}
                 </div>
