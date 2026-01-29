@@ -28,6 +28,23 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleTheme }) => {
         </div>
 
         <div className="flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4">
+            <a href="tel:+78137840235" className="hover:text-blue-600 transition-colors" title="Телефон">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+            </a>
+            <a href="mailto:l-legion@bk.ru" className="hover:text-blue-600 transition-colors" title="Email">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </a>
+            <a href="https://www.legion78.ru" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors" title="Сайт">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+            </a>
+          </div>
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-accent transition-colors"
@@ -66,6 +83,23 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleTheme }) => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-background py-4 px-4 border-t border-border">
           <div className="flex flex-col space-y-3">
+            <div className="flex justify-center space-x-6 pb-3 border-b border-border">
+              <a href="tel:+78137840235" className="hover:text-blue-600 transition-colors" title="Телефон">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </a>
+              <a href="mailto:l-legion@bk.ru" className="hover:text-blue-600 transition-colors" title="Email">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </a>
+              <a href="https://www.legion78.ru" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors" title="Сайт">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+              </a>
+            </div>
             <a
               href="#about"
               className="py-2 hover:text-blue-600 transition-colors text-foreground"
