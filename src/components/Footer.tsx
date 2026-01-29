@@ -1,4 +1,5 @@
 import React from 'react';
+import LegalDocuments from './LegalDocuments';
 
 const Footer: React.FC = () => {
   return (
@@ -39,9 +40,8 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-center mt-8 pt-8 border-t border-border">
-          <div className="flex space-x-6 mb-4 md:mb-0">
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Политика конфиденциальности</a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Условия использования</a>
+          <div className="mb-4 md:mb-0">
+            <LegalDocuments />
           </div>
 
           <div className="text-center md:text-right text-muted-foreground">

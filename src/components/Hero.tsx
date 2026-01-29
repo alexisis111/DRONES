@@ -38,7 +38,7 @@ const Hero: React.FC = () => {
           <div className="relative">
             <ZOKVisualization enableControls={false} />
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white text-sm px-3 py-2 rounded-lg">
-              Нажмите на иконку сверху, чтобы открыть 3D модель и покрутить
+              Нажмите на иконку сверху, чтобы открыть 3D модель
             </div>
             <button
               onClick={() => setIsFullscreenModalOpen(true)}
