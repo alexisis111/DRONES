@@ -811,9 +811,9 @@ const ZOKVisualization = ({ enableControls = true }) => {
         {} :
         {
             // When controls are disabled, allow touch events to pass through to parent elements
-            touchAction: 'auto',
+            touchAction: 'auto' as const,
             // Disable pointer events to allow scrolling when controls are disabled
-            pointerEvents: 'none'
+            pointerEvents: 'none' as const
         };
 
     return (
