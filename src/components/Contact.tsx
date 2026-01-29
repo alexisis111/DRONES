@@ -20,6 +20,7 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
     }
   }, []);
 
+
   // Show success message if form was submitted successfully
   const successMessage = showSuccess ? 'Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.' : '';
 
