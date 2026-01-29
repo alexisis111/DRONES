@@ -805,9 +805,27 @@ const DayClouds = () => {
 
 // ——— ОСНОВНОЙ КОМПОНЕНТ ———
 const ZOKVisualization = ({ enableControls = true }) => {
+    // When controls are disabled, we want to allow scrolling on mobile
+    // We'll conditionally apply styles to the canvas to prevent it from capturing touch events
+    const canvasStyle = enableControls ?
+        {} :
+        {
+            // When controls are disabled, allow touch events to pass through to parent elements
+            touchAction: 'auto',
+            // Disable pointer events to allow scrolling when controls are disabled
+            pointerEvents: 'none'
+        };
+
     return (
-        <div className="w-full h-[500px] rounded-xl overflow-hidden bg-gray-50">
+        <div
+            className="w-full h-[500px] rounded-xl overflow-hidden bg-gray-50"
+            style={{
+                // This ensures that when controls are disabled, touch events can scroll the page
+                touchAction: enableControls ? 'none' : 'auto'
+            }}
+        >
             <Canvas
+                style={canvasStyle}
                 camera={{ position: [18, 12, 18], fov: 50 }}
                 gl={{ antialias: true, alpha: false }}
                 shadows
