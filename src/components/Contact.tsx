@@ -145,6 +145,27 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                     (document.getElementById('hidden-email') as HTMLInputElement).value = visibleEmail;
                     (document.getElementById('hidden-message') as HTMLInputElement).value = visibleMessage;
 
+                    // Submit to Telegram webhook
+                    try {
+                      const response = await fetch('/.netlify/functions/telegram-webhook', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          name: visibleName,
+                          email: visibleEmail,
+                          message: visibleMessage,
+                        }),
+                      });
+
+                      if (!response.ok) {
+                        console.error('Error sending to Telegram:', await response.text());
+                      }
+                    } catch (error) {
+                      console.error('Network error sending to Telegram:', error);
+                    }
+
                     // Submit the hidden form
                     const hiddenForm = document.querySelector('form[name="contact"]') as HTMLFormElement;
                     if (hiddenForm) {
