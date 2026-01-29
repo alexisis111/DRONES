@@ -46,7 +46,7 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
 
                 <div className="flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                   </svg>
                   <span>8 (81378) 40-235</span>
                 </div>
@@ -76,64 +76,33 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
             </div>
 
             <div className="md:w-2/3 p-8">
+              {/* Hidden form for Netlify to detect and process */}
               <form
                 name="contact"
                 method="POST"
                 data-netlify="true"
                 netlify-honeypot="bot-field"
-                onSubmit={async (e) => {
-                  e.preventDefault(); // Prevent default form submission
-
-                  // Get form data
-                  const formData = new FormData(e.currentTarget);
-
-                  try {
-                    // Convert FormData to URLSearchParams
-                    const formBody = new URLSearchParams();
-                    for (const [key, value] of formData.entries()) {
-                      formBody.append(key, value.toString());
-                    }
-
-                    // Submit form using fetch
-                    const response = await fetch('/', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                      },
-                      body: formBody.toString(),
-                    });
-
-                    if (response.ok) {
-                      // Show success message
-                      setShowSuccess(true);
-
-                      // Reset form
-                      e.currentTarget.reset();
-
-                      // Hide success message after 5 seconds
-                      setTimeout(() => {
-                        setShowSuccess(false);
-                      }, 5000);
-                    } else {
-                      console.error('Form submission failed');
-                    }
-                  } catch (error) {
-                    console.error('Error submitting form:', error);
-                  }
-                }}
-                className="space-y-6"
+                action="/?success=true#contact"
+                className="hidden"
               >
                 {/* Netlify form name hidden input */}
                 <input type="hidden" name="form-name" value="contact" />
                 {/* Honeypot field to catch spam bots */}
                 <input type="hidden" name="bot-field" />
+                <input type="hidden" name="name" id="hidden-name" />
+                <input type="hidden" name="email" id="hidden-email" />
+                <input type="hidden" name="message" id="hidden-message" />
+                <button type="submit">Hidden Submit</button>
+              </form>
 
+              {/* Visible form for user interaction */}
+              <form className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1">Ваше имя</label>
+                  <label htmlFor="visible-name" className="block text-sm font-medium text-foreground mb-1">Ваше имя</label>
                   <input
                     type="text"
-                    id="name"
-                    name="name"
+                    id="visible-name"
+                    name="visible-name"
                     className="w-full px-4 py-2 border border-input rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-background text-foreground"
                     placeholder="Иван Иванов"
                     required
@@ -141,11 +110,11 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">Email</label>
+                  <label htmlFor="visible-email" className="block text-sm font-medium text-foreground mb-1">Email</label>
                   <input
                     type="email"
-                    id="email"
-                    name="email"
+                    id="visible-email"
+                    name="visible-email"
                     className="w-full px-4 py-2 border border-input rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-background text-foreground"
                     placeholder="ivan@example.com"
                     required
@@ -153,10 +122,10 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-foreground mb-1">Сообщение</label>
+                  <label htmlFor="visible-message" className="block text-sm font-medium text-foreground mb-1">Сообщение</label>
                   <textarea
-                    id="message"
-                    name="message"
+                    id="visible-message"
+                    name="visible-message"
                     rows={4}
                     className="w-full px-4 py-2 border border-input rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-background text-foreground"
                     placeholder="Расскажите о вашем объекте и потребностях..."
@@ -165,7 +134,23 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                 </div>
 
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={async () => {
+                    // Copy values from visible form to hidden form
+                    const visibleName = (document.getElementById('visible-name') as HTMLInputElement)?.value;
+                    const visibleEmail = (document.getElementById('visible-email') as HTMLInputElement)?.value;
+                    const visibleMessage = (document.getElementById('visible-message') as HTMLTextAreaElement)?.value;
+
+                    (document.getElementById('hidden-name') as HTMLInputElement).value = visibleName;
+                    (document.getElementById('hidden-email') as HTMLInputElement).value = visibleEmail;
+                    (document.getElementById('hidden-message') as HTMLInputElement).value = visibleMessage;
+
+                    // Submit the hidden form
+                    const hiddenForm = document.querySelector('form[name="contact"]') as HTMLFormElement;
+                    if (hiddenForm) {
+                      hiddenForm.submit();
+                    }
+                  }}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
                 >
                   Отправить запрос
