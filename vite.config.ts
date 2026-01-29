@@ -6,7 +6,7 @@ import netlifyReactRouter from "@netlify/vite-plugin-react-router";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), netlifyReactRouter()],
-  base: './',
+  base: "./",
   build: {
     rollupOptions: {
       output: {
