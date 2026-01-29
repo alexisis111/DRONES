@@ -16,8 +16,7 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleTheme }) => {
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm shadow-md border-b border-border">
       <nav className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <div className="bg-blue-600 w-10 h-10 rounded-full"></div>
-          <span className="text-xl font-bold">ООО «ЛЕГИОН»</span>
+          <img src="/Logo-1.png" alt="Логотип ООО «ЛЕГИОН»" className="w-auto h-16" />
         </div>
 
         <div className="hidden md:flex space-x-8">

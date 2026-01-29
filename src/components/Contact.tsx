@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import emailjs from '@emailjs/browser';
 
 interface ContactProps {
   darkMode: boolean;
@@ -21,18 +22,34 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
     const email = formData.get('email') as string;
     const message = formData.get('message') as string;
 
-    // In a real app, we would send the actual values to the server
-    // For this demo, we're just simulating the API call with the values
-    console.log({ name, email, message }); // This will be removed in production
-
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Prepare form data for sending
+      const requestData = {
+        name,
+        email,
+        message,
+        to_email: 'shuragilyow1@gmail.com' // Target email
+      };
+
+      // Send the form data to our Netlify Function
+      const response = await fetch('/.netlify/functions/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to send email');
+      }
 
       // On success
       setSuccessMessage('Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.');
       e.currentTarget.reset(); // Reset form
     } catch (error) {
+      console.error('Error sending email:', error);
       setErrorMessage('Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте еще раз.');
     } finally {
       setIsSubmitting(false);
