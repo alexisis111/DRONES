@@ -69,11 +69,14 @@ const Contact: React.FC<ContactProps> = ({ darkMode }) => {
                 name="contact"
                 method="POST"
                 data-netlify="true"
-                action="/?success=true#contact"
+                action="/contact?success=true#contact"
+                netlify-honeypot="bot-field"
                 className="space-y-6"
               >
                 {/* Netlify form name hidden input */}
                 <input type="hidden" name="form-name" value="contact" />
+                {/* Honeypot field to catch spam bots */}
+                <input type="hidden" name="bot-field" />
 
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1">Ваше имя</label>

@@ -4,6 +4,11 @@
   base = "."
 
 [[redirects]]
+  from = "/contact?success=true#contact"
+  to = "/?success=true#contact"
+  status = 301
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
