@@ -20,9 +20,10 @@ exports.handler = async (event, context) => {
     }
 
     // Create transporter using environment variables
+    // For production, you'll need to set up SMTP credentials in Netlify environment variables
     const transporter = nodemailer.createTransporter({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT) || 587,
       secure: false, // true for 465, false for other ports
       auth: {
         user: process.env.SMTP_USER,
